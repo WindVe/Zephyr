@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Zephyr</title>
+<style>
+:root{
+  --cyan:#00ffff;
+  --green:#00ff88;
+  --bg1:#041d1d;
+  --bg2:#062626;
+  --accent1:#9333ea;
+  --text:#e6fff9;
+  --muted:#aef;
+}
+html { scroll-behavior: smooth; }
+*{box-sizing:border-box}
+body {
+  margin:0;
+  padding:0;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  color:var(--text);
+  background: radial-gradient(circle at top right,#0b1120 0%, #02060a 60%);
+  min-height:100vh;
+  overflow-x:hidden;
+  display:block;
+  padding-bottom:80px;
+  position:relative;
+}
+body::before, body::after { content:''; position:absolute; z-index:0; pointer-events:none; }
+body::before { top:-140px; left:40vw; width:760px; height:760px; background:radial-gradient(circle, rgba(0,255,200,0.06), transparent 55%); filter:blur(50px); border-radius:50%; transform:translateY(0); }
+body::after { bottom:-120px; right:7vw; width:520px; height:520px; background:radial-gradient(circle, rgba(147,51,234,0.04), transparent 70%); filter:blur(40px); border-radius:50%; }
+nav { display:flex; justify-content:space-between; align-items:center; padding:18px 6%; background:linear-gradient(180deg, rgba(3,10,10,0.6), rgba(2,6,6,0.5)); border-bottom:1px solid rgba(255,255,255,0.03); position:sticky; top:0; z-index:10; backdrop-filter:blur(6px); }
+.logo { font-size:1.6rem; font-weight:800; letter-spacing:1px; color:var(--cyan); }
+.nav-buttons { display:flex; align-items:center; gap:12px; }
+.btn-ghost { background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--text); padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; transition:all 0.25s ease; backdrop-filter:blur(6px); }
+.btn-ghost:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,255,200,0.06); }
+.btn-gradient { background: linear-gradient(90deg, var(--cyan), var(--green)); color:#001e1a; font-weight:700; border:none; padding:10px 18px; border-radius:12px; cursor:pointer; transition:all 0.28s ease; box-shadow:0 6px 18px rgba(0,255,200,0.12); }
+.btn-gradient:hover { transform:translateY(-3px) scale(1.01); box-shadow:0 12px 36px rgba(0,255,200,0.22); filter:brightness(1.08); }
+.container { display:flex; min-height:70vh; align-items:center; justify-content:space-between; padding:40px 6%; gap:30px; position:relative; z-index:1; }
+.left { max-width:46%; }
+.left h1 { font-size:4.5rem; margin:0; color:var(--cyan); letter-spacing: -2px; }
+.left p { font-size:1.15rem; margin:10px 0 22px; color:var(--muted); }
+.get-btn { display:inline-block; padding:14px 28px; border-radius:12px; background:linear-gradient(90deg,var(--cyan),var(--green)); border:none; color:#001e1a; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 10px 30px rgba(0,255,200,0.12); transition:all 0.28s; }
+.get-btn:hover { transform: translateY(-4px); box-shadow:0 18px 48px rgba(0,255,200,0.22); filter:brightness(1.05); }
+.right { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; max-width:48%; }
+.card { padding:22px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); border:1px solid rgba(0,255,200,0.03); transition:all 0.28s; }
+.card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,255,200,0.06); }
+.card h3 { margin:0 0 6px; color:var(--muted); }
+.card p { margin:0; color:rgba(230,255,249,0.86); }
+.updates { padding:40px 6%; background:transparent; border-top:1px solid rgba(255,255,255,0.02); margin:32px auto; border-radius:12px; position:relative; z-index:1; }
+.updates h2 { font-size:1.8rem; margin-bottom:20px; color:var(--cyan); }
+.update { background:rgba(255,255,255,0.01); padding:16px; border-radius:10px; margin-bottom:12px; border:1px solid rgba(0,255,200,0.03); }
+.update h3 { margin:0 0 8px; color:var(--muted); }
+.updates-list li { background:transparent; padding:8px 12px; margin-bottom:6px; border-left:4px solid rgba(0,255,200,0.06); border-radius:6px; color:rgba(230,255,249,0.85); }
+.toggle-btn { padding:10px 16px; border-radius:10px; background:linear-gradient(90deg,var(--cyan),var(--green)); border:none; color:#001e1a; font-weight:700; cursor:pointer; transition:all 0.3s; }
+.toggle-btn:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,255,200,0.14); }
+.features { padding:50px 6%; border-top:1px solid rgba(255,255,255,0.02); }
+.features h2 { font-size:1.8rem; color:var(--muted); margin-bottom:18px; }
+.game-tabs { display:flex; gap:14px; margin-bottom:18px; }
+.tab-btn { padding:8px 14px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text); cursor:pointer; font-weight:600; transition:all 0.22s; }
+.tab-btn.active, .tab-btn:hover { background:linear-gradient(90deg,var(--cyan),var(--green)); color:#001e1a; transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,255,200,0.08); }
+.features-list li { background:transparent; padding:10px 12px; margin-bottom:8px; border-left:4px solid rgba(0,255,200,0.03); border-radius:8px; color:rgba(230,255,249,0.88); }
+.game-panel { display:none; opacity:0; transform:translateY(10px); transition: all 0.35s ease; }
+.game-panel.active { display:block; opacity:1; transform:translateY(0); }
+/* Executors - tab fix */
+.executors { padding:50px 6%; border-top:1px solid rgba(255,255,255,0.02); }
+.executor-tabs { display:flex; gap:14px; margin-bottom:18px; }
+.executor-tab-btn { padding:8px 14px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text); cursor:pointer; font-weight:600; transition:all 0.22s; }
+.executor-tab-btn.active, .executor-tab-btn:hover { background:linear-gradient(90deg,var(--cyan),var(--green)); color:#001e1a; transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,255,200,0.08); }
+.executor-panel { display:none; opacity:0; transform:translateY(10px); transition:all 0.4s cubic-bezier(.4,0,.2,1);}
+.executor-panel.active { display:block; opacity:1; transform:translateY(0);}
+.executor-list li { padding:10px 12px; margin-bottom:8px; border-left:4px solid rgba(0,255,200,0.03); border-radius:8px; color:rgba(230,255,249,0.9); }
+#pcExecutors, #mobileExecutors { padding:12px 0; }
+.support-section { padding:50px 6%; border-top:1px solid rgba(255,255,255,0.02); border-radius:12px; margin:30px 0; }
+.support-section h2 { font-size:1.6rem; color:var(--muted); }
+.support-form { display:flex; flex-direction:column; gap:12px; max-width:720px; margin:auto; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); padding:22px; border-radius:12px; border:1px solid rgba(0,255,200,0.03); }
+.support-form label{ color:var(--muted); font-weight:600; }
+.support-form input, .support-form textarea { font-family:'Poppins',sans-serif; color:var(--text); background:transparent; border:1px solid rgba(255,255,255,0.03); border-radius:8px; padding:10px 12px; outline:none; resize:vertical; min-height:44px; }
+.support-form input:focus, .support-form textarea:focus { border:1px solid rgba(0,255,200,0.12); box-shadow:0 8px 24px rgba(0,255,200,0.04); }
+.support-btn { padding:12px 18px; border-radius:10px; background:linear-gradient(90deg,var(--cyan),var(--green)); border:none; color:#001e1a; font-weight:800; cursor:pointer; }
+.support-btn:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,255,200,0.12); }
+footer { text-align:center; padding:18px; color:#9fb; font-size:0.9rem; background:transparent; border-top:1px solid rgba(255,255,255,0.01); }
+.notification { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-8px); background:rgba(0,0,0,0.85); color:var(--text); border:1px solid rgba(255,255,255,0.06); padding:12px 20px; border-radius:10px; opacity:0; pointer-events:none; z-index:3000; box-shadow:0 12px 40px rgba(0,255,200,0.07); transition:opacity .45s cubic-bezier(.4,0,.2,1), transform .42s cubic-bezier(.4,0,.2,1); }
+.notification.show { opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; animation: notifPop .4s; }
+@keyframes notifPop { 0% { opacity:0; transform:translateX(-50%) scale(0.93);} 35% { opacity:1; transform:translateX(-50%) scale(1.07);} 100%{ opacity:1; transform:translateX(-50%) scale(1);} }
+.close-btn { display:inline-block; margin-top:18px; padding:8px 16px; border-radius:8px; cursor:pointer; background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--text); font-weight:700; box-shadow:0 0 0 0 rgba(0,255,200,0.12); transition:all 0.28s cubic-bezier(.4,0,.2,1); }
+.close-btn:hover, .close-btn:focus { background:linear-gradient(90deg,var(--cyan),var(--green)); color:#001e1a; box-shadow:0 12px 30px rgba(0,255,200,0.12),0 0 6px var(--cyan); transform:scale(1.07) translateY(-2px);}
+.modal-bg { position:fixed; inset:0; backdrop-filter:blur(6px); background:rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index:2000; }
+.modal-bg.show { display:flex; animation: modalFadeIn .5s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes modalFadeIn { 0% { opacity:0; transform:scale(0.93);} 40%{ opacity:1; transform:scale(1.07);} 70%{ opacity:1; transform:scale(0.98);} 100%{ opacity:1; transform:scale(1);} }
+.loader-row { display:flex; gap:14px; align-items:center; margin-top:18px; transition:all .3s;}
+.spinner { width:44px; height:44px; border-radius:50%; border:4px solid rgba(255,255,255,0.04); border-top-color:var(--cyan); animation:spin 1s linear infinite; box-shadow:0 6px 24px rgba(0,255,200,0.06); }
+@keyframes spin { to { transform:rotate(360deg); } }
+.prepared .spinner { border-top-color:var(--green); animation:none; transform:scale(1.03); box-shadow:0 10px 34px rgba(0,255,200,0.12);}
+.loader-text { font-weight:700; color:var(--muted); font-size:1rem; }
+.loader-sub { display:block; color:rgba(174,255,255,0.9); font-weight:700; margin-top:6px; font-size:0.95rem; }
+#loaderArea { animation:loaderFadeIn .4s cubic-bezier(.4,0,.2,1);}
+@keyframes loaderFadeIn { 0% { opacity:0; transform:scale(0.95);} 80% { opacity:1; transform:scale(1.03);} 100%{ opacity:1; transform:scale(1);} }
+#copiedPopup { display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(0,255,200,0.12); color:var(--text); border:1px solid rgba(0,255,200,0.18); padding:10px 18px; border-radius:10px; font-weight:700; z-index:3000; }
+@media (max-width:980px){
+  .container{ flex-direction:column; padding:24px 5%; }
+  .right{ max-width:100%; grid-template-columns:1fr; }
+  .left h1{ font-size:3rem; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">Zephyr</div>
+  <div class="nav-buttons">
+    <a href="https://discord.gg/qcyqsver" target="_blank" class="btn-ghost">Discord</a>
+    <button class="btn-ghost" id="featuresNav">Features</button>
+    <button class="btn-ghost" id="executorsNav">Executors Supported</button>
+    <button class="btn-ghost" id="supportNav">Support | Request</button>
+  </div>
+</nav>
+<div class="container">
+  <div class="left">
+    <h1>Zephyr</h1>
+    <p>Undetected Premium Scripts</p>
+    <button class="get-btn" id="openModal">Get</button>
+  </div>
+  <div class="right">
+    <div class="card"><h3>Clean UI</h3><p>Athena offers high quality UI for the smoothest experience.</p></div>
+    <div class="card"><h3>Undetected</h3><p>Athena is completely undetected!</p></div>
+    <div class="card"><h3>Powerful Scripts</h3><p>Access a range of premium crafted Roblox scripts.</p></div>
+    <div class="card"><h3>Constant Updates</h3><p>Athena is updated regularly with new features.</p></div>
+    <div class="card"><h3>Fast Performance</h3><p>Optimizations ensures minimal lag and smooth gameplay.</p></div>
+    <div class="card"><h3>Community Support</h3><p>Join our growing community for help, tips, and shared scripts.</p></div>
+  </div>
+</div>
+<section class="updates">
+  <h2>Updates</h2>
+  <div class="update">
+    <h3>V1.4</h3>
+    <ul class="updates-list">
+      <li>• New game supported: 99 Nights in the Forests</li>
+      <li>• Auto Chop Tree efficiency and optimization improvement</li>
+    </ul>
+  </div>
+  <div id="olderUpdates" style="max-height:0;overflow:hidden;opacity:0;transition:all 0.6s;">
+    <div class="update"><h3>V1.35</h3>
+      <ul class="updates-list">
+        <li>• Arsenal Support</li>
+        <li>• Arsenal Modules</li>
+      </ul>
+    </div>
+    <div class="update"><h3>V1.3</h3>
+      <ul class="updates-list">
+        <li>• Opponent Direction ESP</li>
+        <li>• Hitbox Expander</li>
+        <li>• Auto Spin Style</li>
+        <li>• Auto Spin Abilities</li>
+        <li>• Improved Auto Rotate</li>
+      </ul>
+    </div>
+    <div class="update"><h3>V1.2</h3>
+      <ul class="updates-list">
+        <li>• UI Lib changed to MacLibs UI Library</li>
+        <li>• Added support to Saber Showdown</li>
+        <li>• Added support for VolleyBall Legends</li>
+      </ul>
+    </div>
+    <div class="update"><h3>V1.1</h3>
+      <ul class="updates-list">
+        <li>• Auto-center</li>
+        <li>• Auto-resize for PC and Mobile</li>
+        <li>• Profile/User display (Top Right Corner)</li>
+        <li>• Draggable interface</li>
+      </ul>
+    </div>
+  </div>
+  <div style="padding-top:10px">
+    <button class="toggle-btn" id="toggleBtn">Show All Updates</button>
+  </div>
+</section>
+<section class="features" id="features">
+  <h2>Features</h2>
+  <div class="game-tabs">
+    <button class="tab-btn active" onclick="showGame('saber')">Saber Showdown</button>
+    <button class="tab-btn" onclick="showGame('volleyball')">VolleyBall Legends</button>
+    <button class="tab-btn" onclick="showGame('arsenal')">Arsenal</button>
+    <button class="tab-btn" onclick="showGame('nights')">99 Nights in the Forest</button>
+  </div>
+  <div id="saber" class="game-panel active">
+    <ul class="features-list">
+      <li>• Autofarm</li>
+      <li>• Targetfarm</li>
+      <li>• Killaura</li>
+      <li>• Auto Slap</li>
+      <li>• Anti Slap</li>
+      <li>• Avatar Randomizer</li>
+      <li>• Steal Avatar</li>
+      <li>• Mod Detection</li>
+    </ul>
+  </div>
+  <div id="volleyball" class="game-panel">
+    <ul class="features-list">
+      <li>• Auto Farm</li>
+      <li>• Auto Join Match</li>
+      <li>• Break Game</li>
+      <li>• Hitbox Changer</li>
+      <li>• Auto Rotate Mid-Air</li>
+    </ul>
+  </div>
+  <div id="arsenal" class="game-panel">
+    <ul class="features-list">
+      <li>• Main: Hitbox, Hitbox Transparency, Hitbox Size</li>
+      <li>• Aimbot: Fov Size, Prediction, Smoothness, Wall check, Diff</li>
+      <li>• Gun Mod: Inf Ammo v1, Inf Ammo v2, No Recoil, No Spread, Always Auto</li>
+      <li>• Visual: Esp, Line, Box, Distance, Etc</li>
+    </ul>
+  </div>
+  <div id="nights" class="game-panel">
+    <ul class="features-list">
+      <li>• Bring All</li>
+      <li>• Auto Chop Tree</li>
+      <li>• Jump Power modifier</li>
+      <li>• Walkspeed modifier</li>
+      <li>• Sky Walk</li>
+    </ul>
+  </div>
+</section>
+<section class="executors" id="executors">
+  <h2>Executors Supported</h2>
+  <div class="executor-tabs">
+    <button class="executor-tab-btn active" type="button" onclick="showExecutor('pcExecutors')">PC</button>
+    <button class="executor-tab-btn" type="button" onclick="showExecutor('mobileExecutors')">Mobile</button>
+  </div>
+  <div id="pcExecutors" class="executor-panel active">
+    <ul class="executor-list">
+      <li>Swift</li>
+      <li>Zenith</li>
+      <li>Wave</li>
+      <li>AWP</li>
+      <li>Volcano</li>
+      <li>Seliware</li>
+      <li>Valex</li>
+      <li>Ronix</li>
+      <li>Cryptic</li>
+      <li>Potassium</li>
+      <li>Bunni.lol</li>
+      <li>Sirhurt</li>
+      <li>Nucleus</li>
+    </ul>
+  </div>
+  <div id="mobileExecutors" class="executor-panel">
+    <ul class="executor-list">
+      <li>Delta</li>
+      <li>KRNL</li>
+      <li>Codex</li>
+      <li>Ronix</li>
+      <li>Arceus X</li>
+      <li>Cryptic</li>
+    </ul>
+  </div>
+</section>
+<section class="support-section" id="support">
+  <h2>Support & Request</h2>
+  <form class="support-form" id="supportForm">
+    <label for="supportUser">Username <span style="color:#ffb3b3; font-weight:600;">[ Discord. If another platform, please name it to get contacted. ]</span></label>
+    <input type="text" id="supportUser" name="username" placeholder="e.g. user#1234 or Email" required>
+    <label for="supportTopic">Support / Request</label>
+    <input type="text" id="supportTopic" name="topic" placeholder="What do you need help with?" required>
+    <label for="supportDesc">Description</label>
+    <textarea id="supportDesc" name="desc" placeholder="Describe your issue or request in detail..." required rows="4"></textarea>
+    <button type="submit" class="support-btn">Send</button>
+    <div class="support-msg" id="supportMsg" aria-live="polite" style="min-height:22px;margin-top:8px;"></div>
+  </form>
+</section>
+<footer>© Zephyr 2025. All Rights Reserved.</footer>
+<div id="notification" class="notification" role="status" aria-live="polite"></div>
+<div class="modal-bg" id="modalBg" aria-hidden="true">
+  <div class="modal" id="modal">
+    <h2 style="color:var(--cyan);margin-bottom:8px;">Premium Version offers Advanced Undetected Features</h2>
+    <p style="margin:0 0 8px; color:var(--muted);">Free Version offers <b>Basic Undetected Features</b></p>
+    <div style="margin-top:18px; display:flex; gap:12px; align-items:center;">
+      <button class="btn-gradient" id="copyBtn">Get Free Script</button>
+      <button class="btn-gradient" id="premiumBtn">Get Premium Script</button>
+    </div>
+    <div id="loaderArea" style="margin-top:16px; display:none;">
+      <div class="loader-row" id="loaderRow">
+        <div class="spinner" id="modalSpinner" aria-hidden="true"></div>
+        <div>
+          <div class="loader-text" id="loaderText">Preparing.. <span id="dots">...</span></div>
+          <div class="loader-sub" id="loaderSub">Free script: Basic undetected features.</div>
+        </div>
+      </div>
+    </div>
+    <div class="close-btn" id="closeModal" role="button" tabindex="0">Close</div>
+  </div>
+</div>
+<div id="copiedPopup" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(0,255,200,0.12); color:var(--text); border:1px solid rgba(0,255,200,0.18); padding:10px 18px; border-radius:10px; font-weight:700; z-index:3000;">Copied!</div>
+<script>
+const notificationEl = document.getElementById('notification');
+let notifActive = false, lastNotifMessage = null, notifTimeoutId = null;
+function showNotification(message, duration = 2500) {
+  if (notifActive && message === lastNotifMessage) return;
+  if (notifTimeoutId) { clearTimeout(notifTimeoutId); notifTimeoutId = null; }
+  lastNotifMessage = message; notifActive = true;
+  notificationEl.textContent = message;
+  notificationEl.classList.add('show');
+  notifTimeoutId = setTimeout(() => {
+    notificationEl.classList.remove('show');
+    notifActive = false; lastNotifMessage = null; notifTimeoutId = null;
+  }, duration);
+}
+document.getElementById('featuresNav').addEventListener('click', ()=>{document.getElementById('features').scrollIntoView({behavior:'smooth'});});
+document.getElementById('executorsNav').addEventListener('click', ()=>{document.getElementById('executors').scrollIntoView({behavior:'smooth'});});
+document.getElementById('supportNav').addEventListener('click', ()=>{document.getElementById('support').scrollIntoView({behavior:'smooth'});});
+const toggleBtn = document.getElementById('toggleBtn');
+const olderUpdates = document.getElementById('olderUpdates');
+if(toggleBtn){
+  toggleBtn.addEventListener('click', () => {
+    const isShown = olderUpdates.classList.toggle('show');
+    if(isShown){ olderUpdates.style.maxHeight='2000px'; olderUpdates.style.opacity='1'; } else { olderUpdates.style.maxHeight='0'; olderUpdates.style.opacity='0'; }
+    toggleBtn.textContent = isShown ? 'Hide Older Updates' : 'Show All Updates';
+    showNotification(isShown ? 'Older updates shown' : 'Older updates hidden');
+  });
+}
+function showGame(gameId){
+  document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
+  document.querySelectorAll('.game-panel').forEach(panel=>{ panel.classList.remove('active'); panel.style.opacity='0'; panel.style.transform='translateY(10px)'; });
+  const panel = document.getElementById(gameId); if(!panel) return;
+  panel.classList.add('active');
+  setTimeout(()=>{ panel.style.opacity='1'; panel.style.transform='translateY(0)'; },10);
+  const selector = Array.from(document.querySelectorAll('.tab-btn')).find(b=>b.getAttribute('onclick')?.includes(gameId));
+  if(selector) selector.classList.add('active');
+  showNotification('Switched to ' + gameId);
+}
+function showExecutor(executorId){
+  document.querySelectorAll('.executor-tab-btn').forEach(btn=>btn.classList.remove('active'));
+  document.querySelectorAll('.executor-panel').forEach(panel=>{
+    panel.classList.remove('active');
+    panel.style.opacity='0';
+    panel.style.transform='translateY(10px)';
+  });
+  const panel = document.getElementById(executorId); if(!panel) return;
+  panel.classList.add('active');
+  setTimeout(()=>{ panel.style.opacity='1'; panel.style.transform='translateY(0)'; },10);
+  const selector = Array.from(document.querySelectorAll('.executor-tab-btn')).find(b=>b.getAttribute('onclick')?.includes(executorId));
+  if(selector) selector.classList.add('active');
+  showNotification('Switched to ' + (executorId==='pcExecutors'?'PC Executors':'Mobile Executors'));
+}
+document.getElementById('supportForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const username = document.getElementById('supportUser').value.trim();
+  const topic = document.getElementById('supportTopic').value.trim();
+  const desc = document.getElementById('supportDesc').value.trim();
+  if (username.includes("@everyone") || topic.includes("@everyone") || desc.includes("@everyone") || username.includes("@here") || topic.includes("@here") || desc.includes("@here")) {
+    showNotification("Error: '@everyone' and '@here' are not allowed!");
+    showSupportMsg("Error: '@everyone' or '@here' cannot be included.", true);
+    return;
+  }
+  if(!username || !topic){ showSupportMsg('Username and Topic are required.', true); return; }
+  const data = { content: null, embeds: [ { title: "New Support | Request Submission", color: 12699135, fields: [ { name: "Username", value: username, inline: false }, { name: "Support / Request", value: topic, inline: false }, { name: "Description", value: desc || "No details provided", inline: false } ], footer: { text: "Zephyr Support", icon_url: "" } } ] };
+  try {
+    const response = await fetch("https://discord.com/api/webhooks/1426184000799641630/LynnIVIY0mYuWE5TsjPsnLMOO17KWE6zCjV9HTW8LlByGjqHJSy4SjtnNtsR25qANcDS", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if(response.ok){ showSupportMsg(" Your request was sent successfully!"); showNotification("Request sent successfully!"); document.getElementById('supportForm').reset(); } else { showSupportMsg(" Failed to send. Please try again.", true); showNotification("Failed to send request."); }
+  } catch {
+    showSupportMsg(" Unable to reach server. Try again later.", true);
+    showNotification("Unable to reach server.");
+  }
+});
+function showSupportMsg(msg, error){ const el = document.getElementById('supportMsg'); el.textContent = msg; el.style.color = error ? "#ffb3b3" : "#aef"; setTimeout(()=>{ el.textContent = ""; }, 3500); }
+const modalBg = document.getElementById('modalBg');
+const openModal = document.getElementById('openModal');
+const closeModal = document.getElementById('closeModal');
+const copyBtn = document.getElementById('copyBtn');
+const premiumBtn = document.getElementById('premiumBtn');
+const copiedPopup = document.getElementById('copiedPopup');
+const loaderArea = document.getElementById('loaderArea');
+const loaderRow = document.getElementById('loaderRow');
+const modalSpinner = document.getElementById('modalSpinner');
+const loaderText = document.getElementById('loaderText');
+const loaderSub = document.getElementById('loaderSub');
+const dots = document.getElementById('dots');
+openModal.addEventListener('click', () => {
+  modalBg.classList.add('show');
+  modalBg.setAttribute('aria-hidden', 'false');
+  resetLoader();
+  loaderArea.classList.remove('hide');
+  loaderArea.style.display = 'none';
+});
+closeModal.addEventListener('click', () => {
+  modalBg.classList.remove('show');
+  modalBg.style.animation = '';
+  modalBg.setAttribute('aria-hidden', 'true');
+  resetLoader();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === "Escape" && modalBg.classList.contains('show')) closeModal.click();
+});
+const freeScriptString = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Quartzdll/Athena-Hub/refs/heads/main/%5BBest%5D"))()';
+copyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(freeScriptString);
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = freeScriptString;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+  loaderArea.style.display = 'block';
+  loaderArea.classList.remove('hide');
+  loaderRow.classList.remove('prepared');
+  loaderText.textContent = 'Preparing download';
+  loaderSub.textContent = 'Free script: Basic undetected features.';
+  dots.textContent = '...';
+  showNotification("Script copied to clipboard");
+  let dotCycle = 0;
+  const dotInterval = setInterval(() => {
+    dotCycle++; if (dotCycle > 3) dotCycle = 1;
+    dots.textContent = '.'.repeat(dotCycle);
+  }, 350);
+  setTimeout(() => {
+    clearInterval(dotInterval);
+    loaderRow.classList.add('prepared');
+    loaderText.textContent = 'Prepared';
+    dots.textContent = '';
+    loaderSub.textContent = 'Copied to clipboard. Paste into your executor to run.';
+    copiedPopup.style.display = 'block';
+    setTimeout(() => { copiedPopup.style.display = 'none'; }, 1400);
+  }, 1400);
+});
+premiumBtn.addEventListener('click', () => {
+  window.open("https://discord.gg/qcyqsver", "_blank");
+  showNotification("Opening Discord..");
+});
+function resetLoader() {
+  loaderArea.style.display = 'none';
+  loaderRow.classList.remove('prepared');
+  loaderText.textContent = 'Preparing download';
+  loaderSub.textContent = 'Free script: Basic undetected features.';
+  dots.textContent = '...';
+}
+</script>
+</body>
+</html>
